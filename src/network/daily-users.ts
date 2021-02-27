@@ -3,6 +3,7 @@ import { map } from "lodash";
 import { linearBuildrUrl, customSubgraphUrl } from "../constants";
 import { TransferItem } from "../types";
 
+//  Only calculate users who transfer "VALUE" to others as active users
 export const getDailyActiveUsers = async (mode: "Buildr" | "Lina") => {
   let transfers: TransferItem[] = [];
   try {
