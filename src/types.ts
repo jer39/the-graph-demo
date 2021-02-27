@@ -24,9 +24,3 @@ export type TransferItem = {
   timestamp: number;
   block: number;
 }
-
-export type TransferObj = {
-  data: {
-    transfers: TransferItem[];
-  }
-}
