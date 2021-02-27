@@ -26,6 +26,10 @@ export const getVolumeByAsset = async (key: string) => {
   let count = 0;
   tokenVolumes.forEach(item => {
     count += Number(item.volume);
-  })
-  console.log(`Last 24h trading volume of asset - ${key} is: ${count}`);
+  });
+
+  return {
+    key,
+    tokenVolume: count
+  }
 }

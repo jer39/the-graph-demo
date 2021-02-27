@@ -48,5 +48,8 @@ export const getDailyActiveUsers = async (mode: "Buildr" | "Lina") => {
   });
   
   const lastItem = list.pop();
-  console.log(`Daily Active Users on Linear ${mode}: ${lastItem.activeUsersCount} `);
+  return {
+    mode,
+    activeUsersCount: lastItem.activeUsersCount
+  }
 }
