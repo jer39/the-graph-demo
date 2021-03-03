@@ -1,56 +1,42 @@
 import axios from "axios";
-import { map } from "lodash";
-import { linearBuildrUrl, customSubgraphUrl } from "../constants";
+import { getDayEnd, getDayStart } from "src/utils/time-utils";
 import { TransferItem } from "../types";
 
-//  Only calculate users who transfer "VALUE" to others as active users
-export const getDailyActiveUsers = async (mode: "Buildr" | "Lina") => {
+//  Get Daily Active Users (Custom subgraph)
+export const getDailyActiveUsers = async (endpoint: string, key: "transfers" | "transferFroms") => {
   let transfers: TransferItem[] = [];
+  //  Compute current day start timestamp
+  const dayStartTimestamp = Math.round(getDayStart(new Date()).getTime() / 1000);
+  //  Compute current day end timestamp
+  const dayEndTimestamp = Math.round(getDayEnd(new Date()).getTime() / 1000);
   try {
-    let url = mode === "Buildr" ? linearBuildrUrl : customSubgraphUrl;
+    let url = endpoint;
     const res = await axios.post(url, {
       query: `
         {
-          transfers(first: 1000, orderBy: timestamp, orderDirection: desc) {
+          ${key}(first: 1000, orderBy: timestamp, orderDirection: desc,
+          where: {
+            timestamp_gte: ${dayStartTimestamp}
+            timestamp_lte: ${dayEndTimestamp}
+          }) {
             from
-            timestamp
           }
         }
       `
     });
-    transfers = res.data.data.transfers;
+    transfers = res.data.data[key];
   } catch (err) {
-    console.error(err);
+    console.error("error");
   }
 
-  const activeUsersByDate: Record<string, string[]> = {};
+  const userAddress: string[] = [];
 
   transfers.forEach(transferItem => {
-    const timestamp = Number(transferItem.timestamp);
-    const date = new Date(timestamp * 1000);
-    const isoDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-    if (!activeUsersByDate[isoDate]) {
-      activeUsersByDate[isoDate] = [transferItem.from];
-    } else {
-      const foundUser = activeUsersByDate[isoDate].find(user => user === transferItem.from);
-      if (!foundUser) {
-        activeUsersByDate[isoDate].push(transferItem.from);
-      }
+    const foundUser = userAddress.find(user => user === transferItem.from);
+    if (!foundUser) {
+      userAddress.push(transferItem.from);
     }
   });
 
-  const list = map(activeUsersByDate, (value, key) => {
-    return {
-      date: key,
-      activeUsersCount: value.length
-    }
-  }).sort((a, b) => {
-    return new Date(b.date) > new Date(a.date) ? -1 : 1;
-  });
-  
-  const lastItem = list.pop();
-  return {
-    mode,
-    activeUsersCount: lastItem.activeUsersCount
-  }
+  return userAddress.length;
 }
