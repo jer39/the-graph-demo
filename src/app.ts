@@ -10,17 +10,17 @@ const main = async () => {
 
   //  Get Active Users on Linear Buildr
   //  Public data source found on Linear Buildr playform
-  const buildrCount = await getDailyActiveUsers(linearBuildrUrl, "transfers");
-  console.log(`Daily Active Users on Linear Buildr: ${buildrCount}`);
+  // const buildrCount = await getDailyActiveUsers(linearBuildrUrl, "transfers");
+  // console.log(`Daily Active Users on Linear Buildr: ${buildrCount}`);
 
   //  Use the graph to grab the data on Ethereum mainnet
   //  Get how many times event Transfer was triggered within today (Selfmade subgraph)
   const transferCount = await getDailyActiveUsers(customSubgraphUrl, "transfers");
-  console.log(`Daily Active Users on Lina Token: ${transferCount}`);
+  console.log(`Daily Active Users by calculating Transfer Event on Linear Finance contract: ${transferCount}`);
 
   //  Get Active Users on Linear Exchange by custom subgraph (Calculate how many users trigger transferFrom function within a day)
-  const exchangeCount = await getDailyActiveUsers(customSubgraphUrl, "transferFroms");
-  console.log(`Daily Active Users on Linear Exchange: ${exchangeCount}`);
+  const transferFromCount = await getDailyActiveUsers(customSubgraphUrl, "transferFroms");
+  console.log(`Daily Active Users by capturing transferFrom function on Linear Finance contract: ${transferFromCount}`);
 
   //  Cannot find any Subgraphs to access Active Users on Linear Exchange
 
@@ -30,12 +30,12 @@ const main = async () => {
 
   //  Get trading volume of each assets for last 24 hours displayed on Linear Exchange Platform
   //  Public data source found on Linear Exchange playform
-  const dataArr = await Promise.allSettled(map(LinearFinanceAssetType, key => getVolumeByAsset(key)));
-  forEach(dataArr, data => {
-    if (data.status === "fulfilled") {
-      console.log(`Last 24h trading volume of asset - ${data.value.key} is: ${data.value.tokenVolume}`);
-    }
-  });
+  // const dataArr = await Promise.allSettled(map(LinearFinanceAssetType, key => getVolumeByAsset(key)));
+  // forEach(dataArr, data => {
+  //   if (data.status === "fulfilled") {
+  //     console.log(`Last 24h trading volume of asset - ${data.value.key} is: ${data.value.tokenVolume}`);
+  //   }
+  // });
 
   //  Get 24 hours trading volume of BNB
   const bnbVolume = await getTradingVolume("Bnb");

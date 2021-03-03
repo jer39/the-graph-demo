@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getDayEnd, getDayStart } from "src/utils/time-utils";
+import { getDayEnd, getDayStart } from "../utils/time-utils";
 import { TransferItem } from "../types";
 
 //  Get Daily Active Users (Custom subgraph)
