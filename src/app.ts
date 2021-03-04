@@ -10,8 +10,10 @@ const main = async () => {
 
   //  Get Active Users on Linear Buildr
   //  Public data source found on Linear Buildr playform
-  // const buildrCount = await getDailyActiveUsers(linearBuildrUrl, "transfers");
-  // console.log(`Daily Active Users on Linear Buildr: ${buildrCount}`);
+  console.log("-------------------Public Data Source-------------------");
+  const buildrCount = await getDailyActiveUsers(linearBuildrUrl, "transfers");
+  console.log(`Daily Active Users on Linear Buildr: ${buildrCount}`);
+  console.log("-------------------Public Data Source End, Start of Custom Data Source-------------------");
 
   //  Use the graph to grab the data on Ethereum mainnet
   //  Get how many times event Transfer was triggered within today (Selfmade subgraph)
@@ -29,13 +31,15 @@ const main = async () => {
   console.log("-------------------Start Level Two-------------------");
 
   //  Get trading volume of each assets for last 24 hours displayed on Linear Exchange Platform
-  //  Public data source found on Linear Exchange playform
-  // const dataArr = await Promise.allSettled(map(LinearFinanceAssetType, key => getVolumeByAsset(key)));
-  // forEach(dataArr, data => {
-  //   if (data.status === "fulfilled") {
-  //     console.log(`Last 24h trading volume of asset - ${data.value.key} is: ${data.value.tokenVolume}`);
-  //   }
-  // });
+  //  Public data source found on Linear Exchange platform
+  console.log("-------------------Public Data Source-------------------");
+  const dataArr = await Promise.allSettled(map(LinearFinanceAssetType, key => getVolumeByAsset(key)));
+  forEach(dataArr, data => {
+    if (data.status === "fulfilled") {
+      console.log(`Last 24h trading volume of asset - ${data.value.key} is: ${data.value.tokenVolume}`);
+    }
+  });
+  console.log("-------------------Public Data Source End, Start of Custom Data Source-------------------");
 
   //  Get 24 hours trading volume of BNB
   const bnbVolume = await getTradingVolume("Bnb");
